@@ -1,2 +1,3 @@
-declare function setPrototypeOf(o: any, proto: object | null): any;
-export = setPrototypeOf;
+import createServer from './createServer';
+export * from './BareServer';
+export default createServer;

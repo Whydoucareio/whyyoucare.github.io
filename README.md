@@ -1,234 +1,163 @@
-node-static
-===========
-
-> a simple, *rfc 2616 compliant* file streaming module for [node](http://nodejs.org)
-
-node-static understands and supports *conditional GET* and *HEAD* requests.
-node-static was inspired by some of the other static-file serving modules out there,
-such as node-paperboy and antinode.
-
-Synopsis
---------
-
-```js
-var static = require('node-static');
-
-//
-// Create a node-static server instance to serve the './public' folder
-//
-var file = new static.Server('./public');
-
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        //
-        // Serve files!
-        //
-        file.serve(request, response);
-    }).resume();
-}).listen(8080);
-```
-
-API
----
-
-### Creating a node-static Server #
-
-Creating a file server instance is as simple as:
-
-```js
-new static.Server();
-```
-
-This will serve files in the current directory. If you want to serve files in a specific
-directory, pass it as the first argument:
-
-```js
-new static.Server('./public');
-```
-
-You can also specify how long the client is supposed to cache the files node-static serves:
-
-```js
-new static.Server('./public', { cache: 3600 });
-```
-
-This will set the `Cache-Control` header, telling clients to cache the file for an hour.
-This is the default setting.
-
-### Serving files under a directory #
-
-To serve files under a directory, simply call the `serve` method on a `Server` instance, passing it
-the HTTP request and response object:
-
-```js 
-var static = require('node-static');
-
-var fileServer = new static.Server('./public');
-
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        fileServer.serve(request, response);
-    }).resume();
-}).listen(8080);
-```
-
-### Serving specific files #
-
-If you want to serve a specific file, like an error page for example, use the `serveFile` method:
-
-```js
-fileServer.serveFile('/error.html', 500, {}, request, response);
-```
-
-This will serve the `error.html` file, from under the file root directory, with a `500` status code.
-For example, you could serve an error page, when the initial request wasn't found:
-
-```js
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        fileServer.serve(request, response, function (e, res) {
-            if (e && (e.status === 404)) { // If the file wasn't found
-                fileServer.serveFile('/not-found.html', 404, {}, request, response);
-            }
-        });
-    }).resume();
-}).listen(8080);
-```
-
-More on intercepting errors bellow.
-
-### Intercepting errors & Listening #
-
-An optional callback can be passed as last argument, it will be called every time a file
-has been served successfully, or if there was an error serving the file:
-
-```js
-var static = require('node-static');
-    
-var fileServer = new static.Server('./public');
-
-require('http').createServer(function (request, response) {
-    request.addListener('end', function () {
-        fileServer.serve(request, response, function (err, result) {
-            if (err) { // There was an error serving the file
-                console.error("Error serving " + request.url + " - " + err.message);
-
-                // Respond to the client
-                response.writeHead(err.status, err.headers);
-                response.end();
-            }
-        });
-    }).resume();
-}).listen(8080);
-```
-
-Note that if you pass a callback, and there is an error serving the file, node-static
-*will not* respond to the client. This gives you the opportunity to re-route the request,
-or handle it differently.
-
-For example, you may want to interpret a request as a static request, but if the file isn't found,
-send it to an application.
-
-If you only want to *listen* for errors, you can use *event listeners*:
-
-```js
-fileServer.serve(request, response).addListener('error', function (err) {
-    console.error("Error serving " + request.url + " - " + err.message);
-});
-```
-
-With this method, you don't have to explicitly send the response back, in case of an error.
-
-### Options when creating an instance of `Server` #
-
-#### `cache` #
-
-Sets the `Cache-Control` header.
-
-example: `{ cache: 7200 }`
-
-Passing a number will set the cache duration to that number of seconds.
-Passing `false` will disable the `Cache-Control` header.
-
-> Defaults to `3600`
-
-
-#### `serverInfo` #
-
-Sets the `Server` header.
-
-example: `{ serverInfo: "myserver" }`
-
-> Defaults to `node-static/{version}`
-
-#### `headers` #
-
-Sets response headers.
-
-example: `{ 'X-Hello': 'World!' }`
-
-> defaults to `{}`
-
-#### `gzip` #
-
-Enable support for sending compressed responses.  This will enable a check for a
-file with the same name plus '.gz' in the same folder.  If the compressed file is
-found and the client has indicated support for gzip file transfer, the contents
-of the .gz file will be sent in place of the uncompressed file along with a
-Content-Encoding: gzip header to inform the client the data has been compressed.
-
-example: `{ gzip: true }`
-example: `{ gzip: /^\/text/ }`
-
-Passing `true` will enable this check for all files.
-Passing a RegExp instance will only enable this check if the content-type of the
-respond would match that RegExp using its test() method.
-
-> Defaults to `false`
-
-#### `indexFile` #
-
-Choose a custom index file when serving up directories.
-
-example: `{ indexFile: "index.htm" }`
-
-> Defaults to `index.html`
-
-
-Command Line Interface
-----------------------
-
-`node-static` also provides a CLI.
-
-### Installation #
+<p align="center"><img src="https://raw.githubusercontent.com/titaniumnetwork-dev/ultraviolet-static/main/uv.png" height="200">
+</p>
+
+<h1 align="center">Ultraviolet-Node</h1>
+
+<p align="center">The deployable version of Ultraviolet, a highly sophisticated proxy used for evading internet censorship or accessing websites in a controlled sandbox using the power of service-workers and more!<br><br></p>
+
+## Features
+- CAPTCHA support along with hCAPTCHA support
+- URL encoding settings to further hide activity when using Ultraviolet
+- Configuration all done on the client-side via service-workers
+- Speed in comparison to other web proxies that fully proxy content
+- Blacklist setting and more for easy hosting
+- Security in mind and leak prevention
+- Frequent updates to improve site support or fix security issues
+
+## Supported Sites
+- [Youtube](https://www.youtube.com)
+- [CAPTCHA/hCAPTCHA](https://www.captcha.net)
+- [Spotify](https://spotify.com)
+- [Discord](https://discord.com)
+- [Reddit](https://reddit.com)
+- [GeForce NOW](https://play.geforcenow.com/) (Partially Supported)
+- And more!
+
+## Technologies Used
+- Service Workers
+- HTML, JS, CSS rewriting
+- Parse5
+- Acorn.js
+
+## Used by
+- [Incognito](https://github.com/caracal-js/Incognito), a popular web proxy service with focus on privacy
+- [Holy-Unblocker](https://github.com/titaniumnetwork-dev/Holy-Unblocker), a popular web proxy service focusing on bypassing web filters and more
+- [Hypertabs](titaniumnetwork.org/), a web proxy service using a PWA browser as its frontend
+
+## Table of Contents
+- [Installation And Setup](#installation-and-setup)
+- [Basic Guide](#basic-guide)
+- [Replit Setup Guide](#replit-setup-guide)
+- [Comprehensive Guide](#comprehensive-guide)
+- [Configuration](#configuration)
+- [Frontend](#static-files)
+- [Core Scripts](#core-scripts)
+
+# Installation and Setup
+
+Installation of Ultraviolet is simple. You can find a Tl;DR of the installation and setup process just below. If you are unfamiliar with the "standard" installation process, look a bit farther down for a more comprehensive installation and setup guide.
+
+## Basic Guide
 
 ```sh
-$ npm install -g node-static
+$ git clone https://github.com/titaniumnetwork-dev/Ultraviolet-Node --recursive
+$ cd Ultraviolet-Node
+$ npm install
+$ npm start
 ```
 
-### Example Usage #
+## Replit Setup Guide
+
+To setup on Replit, first click on the "Run on Replit" button. After loading into your repl, click on the green "Run" button. Alternatively, run the following commands:
 
 ```sh
-# serve up the current directory
-$ static
-serving "." at http://127.0.0.1:8080
-
-# serve up a different directory
-$ static public
-serving "public" at http://127.0.0.1:8080
-
-# specify additional headers (this one is useful for development)
-$ static -H '{"Cache-Control": "no-cache, must-revalidate"}'
-serving "." at http://127.0.0.1:8080
-
-# set cache control max age
-$ static -c 7200
-serving "." at http://127.0.0.1:8080
-
-# expose the server to your local network
-$ static -a 0.0.0.0
-serving "." at http://0.0.0.0:8080
-
-# show help message, including all options
-$ static -h
+$ npm install
+$ chmod +x main.sh
+$ ./main.sh
 ```
+
+You will only have to run the second command once. It just allows `main.sh` to be executed. By running `main.sh`, you will update any submodules and will start the app.
+
+**Note**: If you choose not to use `main.sh`, but would rather just run all commands manually, please note that you will have to manually install submodules by running `git update submodules --init`. Without it, `static` will not be installed, and that is a required directory.
+
+## Comprehensive Guide
+
+Below will describe a comprehensive guide to install Ultraviolet on Linux machines.
+
+To clone the repository, simply run the following command:
+
+```sh
+$ git clone https://github.com/titaniumnetwork-dev/Ultraviolet-Node --recursive
+```
+
+The `--recursive` flag will clone the repository and all submodules.
+
+To begin work on the actual setup, cd into the repository. You can do so by running the following command:
+
+```sh
+$ cd Ultraviolet-Node
+```
+
+From here, you can update your submodules and install your dependencies. To do so, run the following command:
+
+```sh
+$ npm install
+```
+
+Finally, to start Ultraviolet, run the following command:
+
+```sh
+$ npm start
+```
+
+You can then find Ultraviolet on `http://127.0.0.1:8080`. If you would like to change the port UV will be running on, edit the last line in `index.mjs`. 
+
+Please note that UV will not function without HTTPS. If you are hosting on Replit or Heroku, this won't be a problem as they provide you with SSL/TLS by default and will automatically apply it to your instance, however if you are attempting to host UV on a different platform, such as a personal server, you **WILL** need to use HTTPS. 
+
+## Configuration
+Configuring Ultraviolet is very simple. Simple descriptions of each configurable option are provided as a comment in the block below. More detailed documentation can be found just below mentioned block.
+
+`uv.config.js`
+
+```javascript
+self.__uv$config = {
+    prefix: '/sw/', // Proxy url prefix
+    bare: '/bare/', // Bare server location
+    encodeUrl: Ultraviolet.codec.xor.encode, // URL Encoding function
+    decodeUrl: Ultraviolet.codec.xor.decode, // Decode URL function
+    handler: '/uv.handler.js', // Handler script
+    bundle: '/uv.bundle.js', // Bundled script
+    config: '/uv.config.js', // Configuration script
+    sw: '/uv.sw.js', // Service Worker Script
+};
+```
+
+| Configuration | Options and Explanation |
+| ------------- | ----------------------- |
+| Prefix | The prefix is the prefix that you want users to see. Ex: `https://example.com/service.` The default prefix is `service`. |
+| Bare | Bare Servers can run on directories. For example, if the directory was /bare/ then the bare origin would look like `http://example.org/bare/`. The bare origin is passed to clients. |
+| encodeUrl| EncodeUrl is how you want the URL a proxy site's visitors has to be encoded. Options include `Ultraviolet.codec.base64.encode`, `Ultraviolet.codec.plain.encode`, or `Ultraviolet.codec.xor.encode`. It is recommended that you use `xor` or `base64` as it hides the queries your visitors are searching and visiting.
+| decodeURL | DecodeUrl is how you want the url to be decoded. It is recommended you keep it the same as `encodeUrl`. |
+| Handler | Handler is the path to the UV handler. The default name and path to this file is `static/uv/uv.handler.js`. |
+| Bundle | Bundle is the path to the UV bundle file. The default name and path to this file is `static/uv/uv.bundle.js`. |
+| Config | Config is the path to the UV config file. The default name and path to this file is `static/uv/uv.bundle.js`. |
+| SW | SW is the path to the UV Service Worker script. The default name and path to this file is `static/uv/uv.sw.js`. |
+
+## Static Files
+
+Static files is the frontend for Ultraviolet. A standalone repository for it can be found [here](https://github.com/titaniumnetwork-dev/Ultraviolet-Static).
+
+## Core Scripts
+
+[Configuration](#configuration) mentions a few scripts that make up Ultraviolet. To get documentation for what each of the scripts do, check out the [documentation](https://github.com/titaniumnetwork-dev/Ultraviolet-Core) for them in their standalone repository.
+
+# Main Scripts After Building
+
+The client-hooking & service worker scripts required for UV are located in [ultraviolet-scripts](https://github.com/titaniumnetwork-dev/ultraviolet-scripts)
+
+- Scripts
+    - `uv.sw.js` Service worker gateway
+    - `uv.sw-handler.js` - Service worker handler
+    - `uv.bundle.js` Webpack compiled Ultraviolet rewriter
+    - `uv.handler.js` Client-side hooking
+    - `uv.config.js` Configuration
+
+# Authors
+
+- Caracal.js (Creator of Ultraviolet)
+- Divide (Creator of TOMP)
+
+# Credits
+- https://github.com/tomphttp
+
+

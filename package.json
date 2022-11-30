@@ -1,44 +1,20 @@
 {
-  "author": {
-    "name": "Robert Kieffer",
-    "url": "http://github.com/broofa",
-    "email": "robert@broofa.com"
+  "dependencies": {
+    "@tomphttp/bare-server-node": "^1.0.2-beta-readme2",
+    "bare-server-node": "github:tomphttp/bare-server-node",
+    "node-static": "^0.7.11"
   },
-  "bin": {
-    "mime": "cli.js"
-  },
-  "engines": {
-    "node": ">=4"
-  },
-  "contributors": [
-    {
-      "name": "Benjamin Thomas",
-      "url": "http://github.com/bentomas",
-      "email": "benjamin@benjaminthomas.org"
-    }
-  ],
-  "description": "A comprehensive library for mime-type mapping",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
-    "github-release-notes": "0.13.1",
-    "mime-db": "1.31.0",
-    "mime-score": "1.1.0"
-  },
+  "name": "uv-app",
+  "version": "1.0.0",
+  "description": "Ultraviolet instance",
+  "main": "index.js",
   "scripts": {
-    "prepare": "node src/build.js",
-    "changelog": "gren changelog --tags=all --generate --override",
-    "test": "node src/test.js"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ."
   },
   "keywords": [
-    "util",
-    "mime"
+    "proxy"
   ],
-  "main": "mime.js",
-  "name": "mime",
-  "repository": {
-    "url": "https://github.com/broofa/node-mime",
-    "type": "git"
-  },
-  "version": "1.6.0"
+  "author": "",
+  "license": "GPL-3.0-or-later"
 }
